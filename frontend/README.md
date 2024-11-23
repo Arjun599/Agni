@@ -7,7 +7,6 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 ## What gets built
 
-- [x] An AWS CodeCommit repository with a copy of the Next.js app code in `chat-app`.
 - [x] An AWS Amplify CI/CD to build, deploy, and host the Next.js.
 - [x] Setup with Amazon Cognito user pool from the backend CDK to enable user authentication.
 - [x] Connctivity with REST API build with the backend CDK.

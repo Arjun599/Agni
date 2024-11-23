@@ -1,7 +1,6 @@
 import * as amplify from '@aws-cdk/aws-amplify-alpha';
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
@@ -29,21 +28,15 @@ export class AmplifyChatuiStack extends cdk.Stack {
       this, "/AgenticLLMAssistantWorkshop/agent_api"
     );
 
-    // -------------------------------------------------------------------------
-
-    // create a new repository and initialize it with the chatui nextjs app source code.
-    // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_codecommit-readme.html
-    const amplifyChatUICodeCommitRepo = new codecommit.Repository(this, 'NextJsGitRepository', {
-      repositoryName: 'nextjs-amplify-chatui',
-      description: 'A chatui with nextjs hosted on AWS Amplify.',
-      code: codecommit.Code.fromDirectory(path.join(__dirname, '../chat-app'), 'main')
-    });
 
     // from https://docs.aws.amazon.com/cdk/api/v2/docs/aws-amplify-alpha-readme.html
     const amplifyChatUI = new amplify.App(this, 'AmplifyChatUI', {
       autoBranchDeletion: true,
-      sourceCodeProvider: new amplify.CodeCommitSourceCodeProvider(
-        {repository: amplifyChatUICodeCommitRepo}),
+      sourceCodeProvider: new amplify.GitHubSourceCodeProvider({
+        owner: 'Arjun599', // Replace with your GitHub username
+        repository: 'AgniFrontend', // Replace with your GitHub repository name
+        oauthToken: cdk.SecretValue.secretsManager('GitHubOAuthTokenMain'), // Store your GitHub OAuth token in Secrets Manager
+      }),
       // enable server side rendering
       platform: amplify.Platform.WEB_COMPUTE,
       // https://docs.aws.amazon.com/amplify/latest/userguide/environment-variables.html#amplify-console-environment-variables
